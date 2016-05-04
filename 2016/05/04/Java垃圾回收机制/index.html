@@ -57,19 +57,43 @@
 
 
 
-<meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+<meta name="description" content="垃圾回收关注点：
+
+
+哪些内存需要回收
+什么时候回收
+如何回收
+
+
+哪些内存需要回收程序计数器、虚拟机栈、本地方法栈3个区域随线程而生，随线程而灭，每个栈帧中分配多少内存基本上在类结构确定下来时就已知了，因此这几个区域的内存分配和回收都具备确定性，不需要考虑回收的问题。因为方法结束或者线程结束时，内存自然会跟着回收了。Java堆和方法区只有在程序处于运行期才知道会创建哪些对象，这部分内存的分配和">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2016/03/28/hello-world/index.html">
+<meta property="og:title" content="Java垃圾回收机制">
+<meta property="og:url" content="http://yoursite.com/2016/05/04/Java垃圾回收机制/index.html">
 <meta property="og:site_name" content="深夜食堂">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
-<meta property="og:updated_time" content="2016-03-28T15:34:50.000Z">
+<meta property="og:description" content="垃圾回收关注点：
+
+
+哪些内存需要回收
+什么时候回收
+如何回收
+
+
+哪些内存需要回收程序计数器、虚拟机栈、本地方法栈3个区域随线程而生，随线程而灭，每个栈帧中分配多少内存基本上在类结构确定下来时就已知了，因此这几个区域的内存分配和回收都具备确定性，不需要考虑回收的问题。因为方法结束或者线程结束时，内存自然会跟着回收了。Java堆和方法区只有在程序处于运行期才知道会创建哪些对象，这部分内存的分配和">
+<meta property="og:image" content="http://static.zybuluo.com/panzheng/ly3pmd1w9zjztuw4yjscfj4q/jvm%E5%86%85%E5%AD%98.jpg">
+<meta property="og:image" content="http://static.zybuluo.com/panzheng/9tu31a3rba3hg9tc8gfft9v4/%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95.jpg">
+<meta property="og:updated_time" content="2016-05-04T08:47:35.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+<meta name="twitter:title" content="Java垃圾回收机制">
+<meta name="twitter:description" content="垃圾回收关注点：
+
+
+哪些内存需要回收
+什么时候回收
+如何回收
+
+
+哪些内存需要回收程序计数器、虚拟机栈、本地方法栈3个区域随线程而生，随线程而灭，每个栈帧中分配多少内存基本上在类结构确定下来时就已知了，因此这几个区域的内存分配和回收都具备确定性，不需要考虑回收的问题。因为方法结束或者线程结束时，内存自然会跟着回收了。Java堆和方法区只有在程序处于运行期才知道会创建哪些对象，这部分内存的分配和">
+<meta name="twitter:image" content="http://static.zybuluo.com/panzheng/ly3pmd1w9zjztuw4yjscfj4q/jvm%E5%86%85%E5%AD%98.jpg">
 
 
 
@@ -87,7 +111,7 @@ Quick">
   };
 </script>
 
-  <title> Hello World | 深夜食堂 </title>
+  <title> Java垃圾回收机制 | 深夜食堂 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -247,7 +271,7 @@ Quick">
             
             
               
-                Hello World
+                Java垃圾回收机制
               
             
           </h1>
@@ -259,8 +283,8 @@ Quick">
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-03-28T23:34:50+08:00" content="2016-03-28">
-              2016-03-28
+            <time itemprop="dateCreated" datetime="2016-05-04T16:40:09+08:00" content="2016-05-04">
+              2016-05-04
             </time>
           </span>
 
@@ -270,8 +294,8 @@ Quick">
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/03/28/hello-world/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/28/hello-world/" itemprop="commentsCount"></span>
+                <a href="/2016/05/04/Java垃圾回收机制/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/04/Java垃圾回收机制/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -293,16 +317,35 @@ Quick">
       
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
+        <p><img src="http://static.zybuluo.com/panzheng/ly3pmd1w9zjztuw4yjscfj4q/jvm%E5%86%85%E5%AD%98.jpg" alt="jvm内存.jpg-65.1kB"></p>
+<p>垃圾回收关注点：</p>
+<blockquote>
+<ul>
+<li>哪些内存需要回收</li>
+<li>什么时候回收</li>
+<li>如何回收</li>
+</ul>
+</blockquote>
+<h1 id="哪些内存需要回收"><a href="#哪些内存需要回收" class="headerlink" title="哪些内存需要回收"></a>哪些内存需要回收</h1><p>程序计数器、虚拟机栈、本地方法栈3个区域随线程而生，随线程而灭，每个栈帧中分配多少内存基本上在类结构确定下来时就已知了，因此这几个区域的内存分配和回收都具备确定性，不需要考虑回收的问题。因为方法结束或者线程结束时，内存自然会跟着回收了。<strong>Java堆</strong>和<strong>方法区</strong>只有在程序处于运行期才知道会创建哪些对象，这部分内存的分配和回收是动态的，因此垃圾收集器所关注的是这部分内存。</p>
+<h1 id="什么时候回收"><a href="#什么时候回收" class="headerlink" title="什么时候回收"></a>什么时候回收</h1><p>关于对象什么时候回收首先得确定对象是否已经死去（即不可能再被任何途径使用），至于判断算法是否存活不同的算法会有不同的结果。</p>
+<blockquote>
+<ul>
+<li><p>引用计数算法<br>给对象添加一个引用计数器，每当有一个地方引用它时，计数器加1；当引用失效时，计数器就减1；只要当计数器为0时，对象就不可能再被引用。此方法实现简单，效率高，但是当对象相互循环引用时，引用计数算法就无法通知GC回收无效对象。</p>
+</li>
+<li><p>可达性分析算法<br>这个算法的基本思路就是通过一系列的称为“GC     Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所有走过的路径称为引用链，当一个对象到GC Roots没有任何引用链相连（用图论的话来说就是从GC Roots带这个对象不可达）时，这个对象就是不可用的。<br><img src="http://static.zybuluo.com/panzheng/9tu31a3rba3hg9tc8gfft9v4/%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95.jpg" alt="可达性分析算法.jpg-91.7kB"></p>
+</li>
+</ul>
+</blockquote>
+<p>无论是通过引用计算算法判断对象的引用数量，还是通过可达分析算法判断对象的引用链是否可达，判定对象是否存活都与“引用”有关。引用总共有如下四种类型，引用强度依次逐渐减弱。</p>
+<blockquote>
+<ul>
+<li>强引用<br>强引用是指程序代码中普遍存在的，类似“Object obj = new Object()”这类的引用，只要强引用还存在，垃圾收集器永远不会回收掉被引用的对象。</li>
+<li>软引用<br>软引用是指一些还有用但是并非必须的对象，在系统将要发生内存溢出异常之前，会将软引用关联的对象进行第二次回收。</li>
+<li>弱引用<br>弱引用是用来描述非必须对象的，但它的强度比软引用更弱一点，被弱引用关联的对象只能生存到下一次垃圾收集发生之前。</li>
+<li>虚引用<br>虚引用也成为幽灵引用或幻影引用，它是最弱的一种引用关系，一个对象是否有虚引用的存在，完全不会对其生成时间构成影响，也无法通过虚引用来取得一个对象是咧。为一个对象设置虚引用关联的唯一目的就是能在这个对象呗收集器回收时收到一个系统通知。</li>
+</ul>
+</blockquote>
+<h1 id="如何回收"><a href="#如何回收" class="headerlink" title="如何回收"></a>如何回收</h1>
       
     </div>
 
@@ -319,13 +362,13 @@ Quick">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2016/04/08/朋友，你好吗？/" rel="next" title="朋友，你好吗？">
+                <i class="fa fa-chevron-left"></i> 朋友，你好吗？
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/04/08/docker/" rel="prev" title="">
-                 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -351,8 +394,8 @@ Quick">
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/03/28/hello-world/"
-           data-title="Hello World" data-url="http://yoursite.com/2016/03/28/hello-world/">
+      <div class="ds-thread" data-thread-key="2016/05/04/Java垃圾回收机制/"
+           data-title="Java垃圾回收机制" data-url="http://yoursite.com/2016/05/04/Java垃圾回收机制/">
       </div>
     
   </div>
@@ -434,7 +477,7 @@ Quick">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#哪些内存需要回收"><span class="nav-number">1.</span> <span class="nav-text">哪些内存需要回收</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么时候回收"><span class="nav-number">2.</span> <span class="nav-text">什么时候回收</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何回收"><span class="nav-number">3.</span> <span class="nav-text">如何回收</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
